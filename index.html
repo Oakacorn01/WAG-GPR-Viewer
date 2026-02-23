@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GPR Depth Slice Viewer</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    .viewer {
+      max-width: 800px;
+      width: 95%;
+      margin: 2em auto;
+      background: #ffffff;
+      padding: 1.5em;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.6em;
+    }
+
+    .image-container {
+      border: 1px solid #ccc;
+      margin: 1em 0;
+      padding: 12px;
+      background: #f9f9f9;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 75vh;
+      object-fit: contain;
+    }
+
+    .controls {
+      margin-top: 1em;
+    }
+
+    .depth-label {
+      font-size: 1.2em;
+      margin-top: 0;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+    }
+
+    .velocity-note {
+      font-weight: normal;
+      font-size: 0.8em;
+    }
+
+    input[type=range] {
+      width: 100%;
+      height: 20px;
+      -webkit-appearance: none;
+      background: #ddd;
+      border-radius: 10px;
+      outline: none;
+      margin: 10px 0;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 25px;
+      height: 25px;
+      background: #4CAF50;
+      cursor: pointer;
+      border-radius: 50%;
+      border: 2px solid #333;
+      margin-top: -3px;
+    }
+
+    input[type=range]::-moz-range-thumb {
+      width: 25px;
+      height: 25px;
+      background: #4CAF50;
+      cursor: pointer;
+      border-radius: 50%;
+      border: 2px solid #333;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.3em;
+      }
+      .depth-label {
+        font-size: 0.9em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="viewer">
+    <h1>GPR Depth Slice Viewer</h1>
+
+    <div class="image-container">
+      <img id="sliceImage" src="" alt="GPR depth slice">
+    </div>
+
+    <div class="controls">
+      <div class="depth-label">
+        Depth <span class="velocity-note">
+         (v = <span id="velocityValue"></span> m/µs)
+        </span>:
+        <span id="depthValue">0.00</span> m
+
+    </div>
+
+     <input
+        type="range"
+        id="depthSlider"
+        min="1"
+        step="1"
+        value="1"
+      >
+ 
+    </div>
+  </div>
+
+  <script>
+  // ===== USER SETTINGS =====
+  // Adjust these values when adding or changing depth slices
+
+  const imageBasePath = "images/";      // Folder containing slice images
+  const imagePrefix = "slice_";         // Filename prefix
+  const imageExtension = ".jpg";        // Image file type
+
+  const numberOfSlices = 50;             // Total number of depth slices
+
+  const firstDepth = 0.201875;           // Depth of first slice (metres)
+  const depthStep  = 0.025234375;        // Depth increment per slice (metres)
+  const assumedVelocity = 80;   // m / microsecond
+
+  // ========================
+
+  // Get references to page elements
+  const slider = document.getElementById("depthSlider");
+  const image  = document.getElementById("sliceImage");
+  const depthText = document.getElementById("depthValue");
+  const velocityText = document.getElementById("velocityValue");
+
+  // Match slider range to number of slices
+  velocityText.textContent = assumedVelocity;
+  slider.max = numberOfSlices;
+
+
+  // Update image and depth label when slider moves
+  function updateSlice() {
+    const index = slider.value;
+
+    // Ensure filenames use two digits (e.g. slice_01.jpg)
+    const paddedIndex = index.toString().padStart(2, "0");
+
+    // Update displayed image
+    image.src = imageBasePath + imagePrefix + paddedIndex + imageExtension;
+
+    // Calculate and display depth
+    const depth = (firstDepth + (index - 1) * depthStep).toFixed(2);
+    depthText.textContent = depth;
+  }
+
+  // Update slice as slider is dragged
+  slider.addEventListener("input", updateSlice);
+
+  // Allow mouse wheel to control depth when hovering over the viewer
+  const viewer = document.querySelector(".viewer");
+
+  viewer.addEventListener("wheel", function (event) {
+    event.preventDefault(); // stop page scrolling
+
+    const delta = Math.sign(event.deltaY);
+
+    // deltaY > 0 = wheel down = deeper
+    // deltaY < 0 = wheel up   = shallower
+    let newValue = parseInt(slider.value) + delta;
+
+    // Clamp to slider limits
+    if (newValue < slider.min) newValue = slider.min;
+    if (newValue > slider.max) newValue = slider.max;
+
+    slider.value = newValue;
+    updateSlice();
+  }, { passive: false });
+
+  // Initialise viewer on page load
+  updateSlice();
+</script>
+
+
+</body>
+</html>
