@@ -1,6 +1,4 @@
 [
-  { "id": "mottistone_manor_courtyard_a", "name": "Mottistone Manor Courtyard area A" },
-  { "id": "mottistone_manor_courtyard_b", "name": "Mottistone Manor Courtyard area B" },
-  { "id": "mottistone_manor_lower_garden_a", "name": "Mottistone Manor Lower Garden area A" },
-  { "id": "mottistone_manor_lower_garden_b", "name": "Mottistone Manor Lower Garden area B" }
+  { "id": "dokes ditched enclosure", "name": "Dokes Ditched Enclosure" },
+  { "id": "dokes camp site", "name": "Dokes Camp Site" },
 ]
