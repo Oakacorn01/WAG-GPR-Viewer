@@ -1,0 +1,10 @@
+{
+  "title": "Dokes Ditched Enclosure",
+  "imagePrefix": "slice_",
+  "imageExtension": ".jpg",
+  "numberOfSlices": 55,
+  "firstDepth": 0.018555,
+  "depthStep": 0.018555,
+  "assumedVelocity": 95
+}
+
