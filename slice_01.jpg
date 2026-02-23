@@ -1,0 +1,9 @@
+{
+  "title": "Mottistone Manor Courtyard area A",
+  "imagePrefix": "slice_",
+  "imageExtension": ".jpg",
+  "numberOfSlices": 59,
+  "firstDepth": 0.07875,
+  "depthStep": 0.02625,
+  "assumedVelocity": 80
+}
